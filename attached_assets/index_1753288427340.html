@@ -1,0 +1,536 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Poema para Nadie</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="language-selector">
+    <div class="language-label">IDIOMA</div>
+    <select id="languageSelect" onchange="changeLanguage(this.value)">
+      <option value="es">ESPAÑOL</option>
+      <option value="eu">EUSKERA</option>
+      <option value="en">ENGLISH</option>
+      <option value="de">DEUTSCH</option>
+      <option value="ka">ქართული</option>
+      <option value="it">ITALIANO</option>
+      <option value="sr">СРПСКИ</option>
+      <option value="tr">TÜRKÇE</option>
+      <option value="pt">PORTUGUÊS</option>
+    </select>
+  </div>
+
+  <div class="ticket">
+    <h1 data-translate="title">POEMA PARA NADIE</h1>
+    <div class="header-line" data-translate="subtitle">SISTEMA DE POESÍA COLABORATIVA</div>
+
+    <div class="item-line">
+      <span data-translate="service">SERVICIO:</span>
+      <span data-translate="verse">VERSO POETICO</span>
+    </div>
+
+    <div class="item-line">
+      <span data-translate="status">ESTADO:</span>
+      <span data-translate="active">ACTIVO</span>
+    </div>
+
+    <div class="item-line main">
+      <span data-translate="continue">CONTINUA DESDE:</span>
+    </div>
+
+    <div id="ultimaPalabra">Cargando última palabra...</div>
+
+    <textarea id="verso" data-translate-placeholder="verse_placeholder"></textarea>
+
+    <input type="text" id="autorNombre" data-translate-placeholder="author_placeholder" />
+
+    <button onclick="enviarVerso()" data-translate="send_button">ENVIAR VERSO</button>
+
+    <div class="footer" data-translate="thanks">
+      GRACIAS POR PARTICIPAR
+    </div>
+  </div>
+
+  <div class="acceso-expandible">
+    <button onclick="toggleAcceso()" class="acceso-button" data-translate="view_poem">VER EL POEMA</button>
+    <div id="accesoContent" class="acceso-content" style="display: none;">
+      <div class="acceso-text" data-translate="access_text">De momento solo la artista tiene acceso</div>
+      <div id="loginSection" class="acceso-login">
+        <input type="password" id="password" data-translate-placeholder="password_placeholder" />
+        <button onclick="login()" data-translate="login_button">LOGIN</button>
+      </div>
+      <div id="loggedInSection" class="acceso-logged" style="display: none;">
+        <div class="total-line" data-translate="session_started">SESIÓN INICIADA</div>
+        <a href="/poema" target="_blank" data-translate="view_full_poem">VER POEMA COMPLETO</a>
+        <button onclick="logout()" data-translate="logout_button">LOGOUT</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-boxes">
+    <div class="info-box">
+      <button onclick="toggleInfo('instrucciones')" class="info-button" data-translate="instructions">INSTRUCCIONES</button>
+      <div id="instrucciones" class="info-content" style="display: none;">
+        <div class="info-text" data-translate="instructions_text">
+          Se escribe utilizando el método del Cadáver Exquisito, donde muchas personas colaboran para crear una pieza poética sin conocer las contribuciones previas completas<br><br>
+          1. Lee la última palabra del poema<br>
+          2. Escribe un verso a partir de esa palabra<br>
+          3. En la casilla de abajo escribe tu nombre (si no quieres tan solo escribe anónimo)<br>
+          4. Dale a enviar :)<br>
+          5. Gracias gracias gracias por participar<br><br>
+          <strong>Posibles dudas</strong><br>
+          • No hay límite de palabras<br>
+          • Escribe en el idioma que quieras<br>
+          • Puedes escribir más de una vez<br>
+          • A los versos no se les dará crédito por autor de forma individual, pero los nombres de los que los han escrito aparecerán en los agradecimientos<br>
+          • No, no se puede acceder al poema completo hasta que la creadora decida publicarlo ;)
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <button onclick="toggleInfo('proyecto')" class="info-button" data-translate="project">SOBRE EL PROYECTO</button>
+      <div id="proyecto" class="info-content" style="display: none;">
+        <div class="info-text" data-translate="project_text">
+          <strong>¿Y este proyecto porqué?</strong><br><br>
+          Porque me apetecía ver qué pasaba al juntar la vieja máquina de escribir que tengo en casa con una herramienta de digitalización<br><br>
+          Porque en vez de ponerme a aprender alemán he decidido aprender código<br><br>
+          Porque el verano es muy largo y me gusta mantenerme ocupada<br><br>
+          Porque así, me curo un poco del problema de no poder estar en más de un sitio a la vez<br><br>
+          Porque me apetece<br><br>
+          Porque después de esta "primera fase", cogeré el poema y haré con el una performance, un fanzine, una obra de teatro, una instalación (o algo de eso)
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <button onclick="toggleInfo('artista')" class="info-button" data-translate="artist">SOBRE LA ARTISTA</button>
+      <div id="artista" class="info-content" style="display: none;">
+        <div class="info-text-container">
+          <div class="info-text">
+            <strong>31.10.200 Bilbao</strong><br><br>
+            <span data-translate="artist_text">Artista y performer. Mi color favorito es el rojo. Actualmente vivo entre Berlín y Bilbao, con mis cosas pasando más tiempo en una maleta sin deshacer que en un armario.<br><br>
+            No me apetece andar contando más detalles, el que quiera que me pida el currículum o me escriba. Me hace muy feliz que participéis :)</span><br><br>
+            <strong>Mail:</strong> maricuchini@gmail.com<br>
+            <strong>Instagram:</strong> just_maria_lopez
+          </div>
+          <div class="artist-video-container">
+            <div class="video-click-indicator" onclick="playVideo()">
+              <div class="click-arrow">▶</div>
+              <div class="click-text" data-translate="click_me">CLICK ME</div>
+            </div>
+            <video id="artistVideo" width="100%" style="max-width: 300px; display: none;">
+              <source src="/video.mp4" type="video/mp4">
+              Tu navegador no soporta el elemento de video.
+            </video>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="project-credit" data-translate="project_credit">
+    UN PROYECTO DE MARÍA LÓPEZ
+  </div>
+
+  <script>
+    async function cargarUltimaPalabra() {
+      const res = await fetch("/api/ultimo");
+      const data = await res.json();
+      document.getElementById("ultimaPalabra").innerText = data.ultima;
+    }
+
+    async function enviarVerso() {
+      const verso = document.getElementById("verso").value.trim();
+      const autor = document.getElementById("autorNombre").value.trim();
+      
+      if (!verso) {
+        alert("si no escribes no vale :(");
+        return;
+      }
+
+      await fetch("/api/agregar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ verso, autor }),
+      });
+
+      document.getElementById("verso").value = "";
+      document.getElementById("autorNombre").value = "";
+      cargarUltimaPalabra();
+    }
+
+    async function login() {
+      const password = document.getElementById("password").value;
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password })
+      });
+
+      if (res.ok) {
+        checkLoginStatus();
+        document.getElementById("password").value = "";
+      } else {
+        alert("Password incorrecto");
+      }
+    }
+
+    async function logout() {
+      await fetch("/api/logout", { method: "POST" });
+      checkLoginStatus();
+    }
+
+    async function checkLoginStatus() {
+      const res = await fetch("/api/status");
+      const data = await res.json();
+
+      if (data.isLoggedIn) {
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("loggedInSection").style.display = "block";
+      } else {
+        document.getElementById("loginSection").style.display = "block";
+        document.getElementById("loggedInSection").style.display = "none";
+      }
+    }
+
+    function toggleAcceso() {
+      const content = document.getElementById("accesoContent");
+      if (content.style.display === "none") {
+        content.style.display = "block";
+      } else {
+        content.style.display = "none";
+      }
+    }
+
+    document.getElementById("password").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        login();
+      }
+    });
+
+    function toggleInfo(infoId) {
+      const content = document.getElementById(infoId);
+      if (content.style.display === "none") {
+        content.style.display = "block";
+      } else {
+        content.style.display = "none";
+      }
+    }
+
+    function playVideo() {
+      const video = document.getElementById('artistVideo');
+      const indicator = document.querySelector('.video-click-indicator');
+      
+      indicator.style.display = 'none';
+      video.style.display = 'block';
+      
+      // Disable controls
+      video.controls = false;
+      video.currentTime = 0;
+      
+      video.play();
+      
+      // When video ends, reset to initial state
+      video.addEventListener('ended', function() {
+        video.style.display = 'none';
+        indicator.style.display = 'flex';
+        video.currentTime = 0;
+      });
+    }
+
+    // Translation system
+    const translations = {
+      es: {
+        title: "POEMA PARA NADIE",
+        subtitle: "SISTEMA DE POESÍA COLABORATIVA",
+        service: "SERVICIO:",
+        verse: "VERSO POETICO",
+        status: "ESTADO:",
+        active: "ACTIVO",
+        continue: "CONTINUA DESDE:",
+        verse_placeholder: "ESCRIBE TU VERSO AQUI...",
+        author_placeholder: "¿QUIEN ESCRIBE? (opcional)",
+        send_button: "ENVIAR VERSO",
+        thanks: "GRACIAS POR PARTICIPAR",
+        view_poem: "VER EL POEMA",
+        access_text: "De momento solo la artista tiene acceso",
+        password_placeholder: "CONTRASEÑA...",
+        login_button: "LOGIN",
+        session_started: "SESIÓN INICIADA",
+        view_full_poem: "VER POEMA COMPLETO",
+        logout_button: "LOGOUT",
+        instructions: "INSTRUCCIONES",
+        instructions_text: "Se escribe utilizando el método del Cadáver Exquisito, donde muchas personas colaboran para crear una pieza poética sin conocer las contribuciones previas completas<br><br>1. Lee la última palabra del poema<br>2. Escribe un verso a partir de esa palabra<br>3. En la casilla de abajo escribe tu nombre (si no quieres tan solo escribe anónimo)<br>4. Dale a enviar :)<br>5. Gracias gracias gracias por participar<br><br><strong>Posibles dudas</strong><br>• No hay límite de palabras<br>• Escribe en el idioma que quieras<br>• Puedes escribir más de una vez<br>• A los versos no se les dará crédito por autor de forma individual, pero los nombres de los que los han escrito aparecerán en los agradecimientos<br>• No, no se puede acceder al poema completo hasta que la creadora decida publicarlo ;)",
+        project: "SOBRE EL PROYECTO",
+        project_text: "<strong>¿Y este proyecto porqué?</strong><br><br>Porque me apetecía ver qué pasaba al juntar la vieja máquina de escribir que tengo en casa con una herramienta de digitalización<br><br>Porque en vez de ponerme a aprender alemán he decidido aprender código<br><br>Porque el verano es muy largo y me gusta mantenerme ocupada<br><br>Porque así, me curo un poco del problema de no poder estar en más de un sitio a la vez<br><br>Porque me apetece<br><br>Porque después de esta \"primera fase\", cogeré el poema y haré con el una performance, un fanzine, una obra de teatro, una instalación (o algo de eso)",
+        artist: "SOBRE LA ARTISTA",
+        artist_text: "Artista y performer. Mi color favorito es el rojo. Actualmente vivo entre Berlín y Bilbao, con mis cosas pasando más tiempo en una maleta sin deshacer que en un armario.<br><br>No me apetece andar contando más detalles, el que quiera que me pida el currículum o me escriba. Me hace muy feliz que participéis :)",
+        click_me: "CLICK ME",
+        project_credit: "UN PROYECTO DE MARÍA LÓPEZ"
+      },
+      eu: {
+        title: "INORAKO POEMA",
+        subtitle: "LANKIDETZA POESIA SISTEMA",
+        service: "ZERBITZUA:",
+        verse: "BERTSOA",
+        status: "EGOERA:",
+        active: "AKTIBOA",
+        continue: "JARRAITU HITZETIK:",
+        verse_placeholder: "IDATZI ZURE BERTSOA HEMEN...",
+        author_placeholder: "NOR IDAZTEN DU? (aukerakoa)",
+        send_button: "BERTSOA BIDALI",
+        thanks: "ESKERRIK ASKO PARTE HARTZEAGATIK",
+        view_poem: "POEMA IKUSI",
+        access_text: "Oraingoz artistak bakarrik du sarbidea",
+        password_placeholder: "PASAHITZA...",
+        login_button: "SARTU",
+        session_started: "SAIOA HASI DA",
+        view_full_poem: "POEMA OSOA IKUSI",
+        logout_button: "IRTEN",
+        instructions: "JARRAIBIDEAK",
+        instructions_text: "Gorputz Bikainaren metodoa erabiliz idazten da, non pertsona askok elkarrekin lan egiten duten pieza poetiko bat sortzeko, aurreko ekarpenak osorik ezagutu gabe<br><br>1. Irakurri poemaren azken hitza<br>2. Idatzi bertso bat hitz horretatik abiatuz<br>3. Beheko kaxan idatzi zure izena (ez baduzu nahi, idatzi anonimoa)<br>4. Eman bidali botoia :)<br>5. Eskerrik asko, eskerrik asko, eskerrik asko parte hartzeagatik<br><br><strong>Zalantzak</strong><br>• Ez dago hitz mugarik<br>• Idatzi nahi duzun hizkuntzan<br>• Behin baino gehiagotan idatz dezakezu<br>• Bertsoek ez dute autorearekiko krediturik jasoko banaka-banaka, baina idatzi dituzten pertsonen izenak esker onetan agertuko dira<br>• Ez, ezin da poema osoa ikusi sortzaileak argitaratzea erabaki arte ;)",
+        project: "PROIEKTUARI BURUZ",
+        project_text: "<strong>Eta proiektu hau zergatik?</strong><br><br>Etxean daukat idazmakina zaharra digitalizazio tresna batekin konbinatzeak zer gertatuko zen ikusi nahi nuelako<br><br>Alemana ikastera jarri beharrean kodea ikasten jarri naizelako<br><br>Uda oso luzea delako eta lanpetuta egotea gustatzen zaitalako<br><br>Horrela, toki bakarrean egoteko arazo hori sendatzen dudalako<br><br>Gogoa daukalako<br><br>\"Lehen fase\" honen ondoren, poema hartuko dudalako eta berarekin performance bat, fanzine bat, antzezlan bat, instalazio bat egingo dudalako (edo hori bezalako zerbait)",
+        artist: "ARTISTARI BURUZ",
+        artist_text: "Artista eta performerra. Nire kolore gogokoena gorria da. Gaur egun Berlin eta Bilbao artean bizi naiz, nire gauzak armairuan baino maleta baten barruan egin gabe gehiago egoten dira.<br><br>Ez dut xehetasun gehiago kontatzeko gogorik, nahi duenak curriculuma eska diezadak edo idatz diezadak. Zuen parte-hartzea oso pozik egiten nau :)",
+        click_me: "KLIK EGIN",
+        project_credit: "MARÍA LÓPEZ-EN PROIEKTUA"
+      },
+      en: {
+        title: "POEM FOR NOBODY",
+        subtitle: "COLLABORATIVE POETRY SYSTEM",
+        service: "SERVICE:",
+        verse: "POETIC VERSE",
+        status: "STATUS:",
+        active: "ACTIVE",
+        continue: "CONTINUE FROM:",
+        verse_placeholder: "WRITE YOUR VERSE HERE...",
+        author_placeholder: "WHO WRITES? (optional)",
+        send_button: "SEND VERSE",
+        thanks: "THANK YOU FOR PARTICIPATING",
+        view_poem: "VIEW THE POEM",
+        access_text: "For now only the artist has access",
+        password_placeholder: "PASSWORD...",
+        login_button: "LOGIN",
+        session_started: "SESSION STARTED",
+        view_full_poem: "VIEW COMPLETE POEM",
+        logout_button: "LOGOUT",
+        instructions: "INSTRUCTIONS",
+        instructions_text: "It is written using the Exquisite Corpse method, where many people collaborate to create a poetic piece without knowing the complete previous contributions<br><br>1. Read the last word of the poem<br>2. Write a verse starting from that word<br>3. In the box below write your name (if you don't want to, just write anonymous)<br>4. Hit send :)<br>5. Thank you thank you thank you for participating<br><br><strong>Possible doubts</strong><br>• There is no word limit<br>• Write in the language you want<br>• You can write more than once<br>• Verses will not be credited by author individually, but the names of those who have written them will appear in the acknowledgments<br>• No, you cannot access the complete poem until the creator decides to publish it ;)",
+        project: "ABOUT THE PROJECT",
+        project_text: "<strong>And why this project?</strong><br><br>Because I felt like seeing what happened when I combined the old typewriter I have at home with a digitization tool<br><br>Because instead of learning German I decided to learn code<br><br>Because summer is very long and I like to keep myself busy<br><br>Because this way, I heal a little from the problem of not being able to be in more than one place at a time<br><br>Because I feel like it<br><br>Because after this \"first phase\", I will take the poem and make a performance, a fanzine, a play, an installation with it (or something like that)",
+        artist: "ABOUT THE ARTIST",
+        artist_text: "Artist and performer. My favorite color is red. I currently live between Berlin and Bilbao, with my things spending more time in an unpacked suitcase than in a closet.<br><br>I don't feel like telling more details, whoever wants can ask me for my resume or write to me. It makes me very happy that you participate :)",
+        click_me: "CLICK ME",
+        project_credit: "A PROJECT BY MARÍA LÓPEZ"
+      },
+      de: {
+        title: "GEDICHT FÜR NIEMANDEN",
+        subtitle: "KOLLABORATIVES POESIE-SYSTEM",
+        service: "DIENST:",
+        verse: "POETISCHER VERS",
+        status: "STATUS:",
+        active: "AKTIV",
+        continue: "WEITER VON:",
+        verse_placeholder: "SCHREIBT EUREN VERS HIER...",
+        author_placeholder: "WER SCHREIBT? (optional)",
+        send_button: "VERS SENDEN",
+        thanks: "DANKE FÜR EURE TEILNAHME",
+        view_poem: "GEDICHT ANSEHEN",
+        access_text: "Momentan hat nur die Künstlerin Zugang",
+        password_placeholder: "PASSWORT...",
+        login_button: "ANMELDEN",
+        session_started: "SITZUNG GESTARTET",
+        view_full_poem: "VOLLSTÄNDIGES GEDICHT ANSEHEN",
+        logout_button: "ABMELDEN",
+        instructions: "ANWEISUNGEN",
+        instructions_text: "Es wird mit der Methode des Exquisiten Leichnams geschrieben, bei der viele Menschen zusammenarbeiten, um ein poetisches Stück zu schaffen, ohne die vollständigen vorherigen Beiträge zu kennen<br><br>1. Lest das letzte Wort des Gedichts<br>2. Schreibt einen Vers ausgehend von diesem Wort<br>3. In der Box unten schreibt euren Namen (wenn ihr nicht wollt, schreibt einfach anonym)<br>4. Drückt senden :)<br>5. Danke danke danke für eure Teilnahme<br><br><strong>Mögliche Zweifel</strong><br>• Es gibt keine Wortbegrenzung<br>• Schreibt in der Sprache, die ihr wollt<br>• Ihr könnt mehr als einmal schreiben<br>• Verse werden nicht individuell nach Autor kreditiert, aber die Namen derjenigen, die sie geschrieben haben, werden in den Danksagungen erscheinen<br>• Nein, ihr könnt nicht auf das vollständige Gedicht zugreifen, bis die Schöpferin entscheidet, es zu veröffentlichen ;)",
+        project: "ÜBER DAS PROJEKT",
+        project_text: "<strong>Und warum dieses Projekt?</strong><br><br>Weil ich sehen wollte, was passiert, wenn ich die alte Schreibmaschine, die ich zu Hause habe, mit einem Digitalisierungstool kombiniere<br><br>Weil ich mich entschieden habe, Code zu lernen, anstatt Deutsch zu lernen<br><br>Weil der Sommer sehr lang ist und ich mich gerne beschäftigt halte<br><br>Weil ich so ein wenig das Problem heile, nicht an mehr als einem Ort gleichzeitig sein zu können<br><br>Weil ich Lust dazu habe<br><br>Weil ich nach dieser \"ersten Phase\" das Gedicht nehmen und eine Performance, ein Fanzine, ein Theaterstück, eine Installation damit machen werde (oder so etwas)",
+        artist: "ÜBER DIE KÜNSTLERIN",
+        artist_text: "Künstlerin und Performerin. Meine Lieblingsfarbe ist rot. Ich lebe derzeit zwischen Berlin und Bilbao, wobei meine Sachen mehr Zeit in einem ungepackten Koffer als in einem Kleiderschrank verbringen.<br><br>Ich habe keine Lust, mehr Details zu erzählen, wer will, kann mich nach meinem Lebenslauf fragen oder mir schreiben. Es macht mich sehr glücklich, dass ihr teilnehmt :)",
+        click_me: "KLICK MICH",
+        project_credit: "EIN PROJEKT VON MARÍA LÓPEZ"
+      },
+      ka: {
+        title: "ლექსი ვერავისთვის",
+        subtitle: "კოლაბორაციული პოეზიის სისტემა",
+        service: "სერვისი:",
+        verse: "პოეტური ლექსი",
+        status: "სტატუსი:",
+        active: "აქტიური",
+        continue: "გაგრძელება:",
+        verse_placeholder: "დაწერეთ თქვენი ლექსი აქ...",
+        author_placeholder: "ვინ წერს? (არასავალდებულო)",
+        send_button: "ლექსის გაგზავნა",
+        thanks: "მადლობა მონაწილეობისთვის",
+        view_poem: "ლექსის ნახვა",
+        access_text: "ამჟამად მხოლოდ მხატვარს აქვს წვდომა",
+        password_placeholder: "პაროლი...",
+        login_button: "შესვლა",
+        session_started: "სესია დაიწყო",
+        view_full_poem: "სრული ლექსის ნახვა",
+        logout_button: "გამოსვლა",
+        instructions: "ინსტრუქციები",
+        instructions_text: "იწერება გამოყენებით მეთოდი Exquisite Corpse, სადაც ბევრი ადამიანი თანამშრომლობს პოეტური ნაწარმოების შექმნისთვის, არ იცოდნენ სრული წინა წვლილი<br><br>1. წაიკითხეთ ლექსის ბოლო სიტყვა<br>2. დაწერეთ ლექსი იმ სიტყვიდან დაწყებული<br>3. ქვემოთ მოცემულ ყუთში ჩაწერეთ თქვენი სახელი (თუ არ გსურთ, უბრალოდ ჩაწერეთ ანონიმური)<br>4. დააჭირეთ გაგზავნას :)<br>5. მადლობა მადლობა მადლობა მონაწილეობისთვის<br><br><strong>შესაძლო ეჭვები</strong><br>• არ არის სიტყვების შეზღუდვა<br>• დაწერეთ ენაზე, რომელიც გსურთ<br>• შეგიძლიათ დაწეროთ ერთზე მეტჯერ<br>• ლექსები არ იქნება კრედიტირებული ავტორის მიხედვით ინდივიდუალურად, მაგრამ მათი სახელები, ვინც დაწერა, გამოჩნდება მადლობაში<br>• არა, ვერ შეძლებთ სრულ ლექსზე წვდომას, სანამ შემქმნელი არ გადაწყვეტს მის გამოქვეყნებას ;)",
+        project: "პროექტის შესახებ",
+        project_text: "<strong>და რატომ ეს პროექტი?</strong><br><br>რადგან მინდოდა დამენახა რა მოხდება, თუ ძველი საბეჭდი მანქანა, რომელიც მაქვს სახლში, შევაერთებ ციფრულ ინსტრუმენტთან<br><br>რადგან გერმანული ენის შესწავლის ნაცვლად გადავწყვიტე კოდის შესწავლა<br><br>რადგან ზაფხული ძალიან გრძელია და მიყვარს საკუთარი თავის დაკავებული შენახვა<br><br>რადგან ასე, ცოტათი ვკურნავ იმ პრობლემას, რომ ერთდროულად ერთზე მეტ ადგილას ვერ ვარ<br><br>რადგან მინდა<br><br>რადგან ამ \"პირველი ფაზის\" შემდეგ, ლექსს ავიღებ და მასთან ერთად შევქმნი პერფორმანსს, ფანზინს, სპექტაკლს, ინსტალაციას (ან რაღაც მსგავსს)",
+        artist: "მხატვრის შესახებ",
+        artist_text: "მხატვარი და პერფორმერი. ჩემი საყვარელი ფერი წითელია. ამჟამად ვცხოვრობ ბერლინსა და ბილბაოს შორის, ჩემი ნივთები უფრო მეტ დროს ატარებს გაუხსნელ ჩემოდანში, ვიდრე კარადაში.<br><br>არ მინდა მეტი დეტალების მოყოლა, ვისაც უნდა შემიძლია ჩემი რეზიუმე ითხოვოს ან დამწეროს. ძალიან მახარებს, რომ მონაწილეობთ :)",
+        click_me: "დამაჭირე",
+        project_credit: "მარია ლოპესის პროექტი"
+      },
+      it: {
+        title: "POESIA PER NESSUNO",
+        subtitle: "SISTEMA DI POESIA COLLABORATIVA",
+        service: "SERVIZIO:",
+        verse: "VERSO POETICO",
+        status: "STATO:",
+        active: "ATTIVO",
+        continue: "CONTINUA DA:",
+        verse_placeholder: "SCRIVI IL TUO VERSO QUI...",
+        author_placeholder: "CHI SCRIVE? (opzionale)",
+        send_button: "INVIA VERSO",
+        thanks: "GRAZIE PER LA PARTECIPAZIONE",
+        view_poem: "VISUALIZZA LA POESIA",
+        access_text: "Per ora solo l'artista ha accesso",
+        password_placeholder: "PASSWORD...",
+        login_button: "ACCEDI",
+        session_started: "SESSIONE INIZIATA",
+        view_full_poem: "VISUALIZZA POESIA COMPLETA",
+        logout_button: "ESCI",
+        instructions: "ISTRUZIONI",
+        instructions_text: "Si scrive utilizzando il metodo del Cadavere Squisito, dove molte persone collaborano per creare un pezzo poetico senza conoscere i contributi precedenti completi<br><br>1. Leggi l'ultima parola della poesia<br>2. Scrivi un verso partendo da quella parola<br>3. Nella casella sotto scrivi il tuo nome (se non vuoi, scrivi semplicemente anonimo)<br>4. Premi invia :)<br>5. Grazie grazie grazie per la partecipazione<br><br><strong>Possibili dubbi</strong><br>• Non c'è limite di parole<br>• Scrivi nella lingua che vuoi<br>• Puoi scrivere più di una volta<br>• I versi non saranno accreditati per autore individualmente, ma i nomi di coloro che li hanno scritti appariranno nei ringraziamenti<br>• No, non puoi accedere alla poesia completa finché il creatore non decide di pubblicarla ;)",
+        project: "RIGUARDO IL PROGETTO",
+        project_text: "<strong>E perché questo progetto?</strong><br><br>Perché mi andava di vedere cosa succedeva nel unire la vecchia macchina da scrivere che ho in casa con uno strumento di digitalizzazione<br><br>Perché invece di mettermi a imparare il tedesco ho deciso di imparare il codice<br><br>Perché l'estate è molto lunga e mi piace tenermi occupata<br><br>Perché così, mi curo un po' del problema di non poter essere in più di un posto alla volta<br><br>Perché mi va<br><br>Perché dopo questa \"prima fase\", prenderò la poesia e farò con essa una performance, un fanzine, un'opera teatrale, un'installazione (o qualcosa del genere)",
+        artist: "RIGUARDO L'ARTISTA",
+        artist_text: "Artista e performer. Il mio colore preferito è il rosso. Attualmente vivo tra Berlino e Bilbao, con le mie cose che passano più tempo in una valigia senza disfare che in un armadio.<br><br>Non mi va di raccontare più dettagli, chi vuole può chiedermi il curriculum o scrivermi. Mi rende molto felice che partecipiate :)",
+        click_me: "CLICCAMI",
+        project_credit: "UN PROGETTO DI MARÍA LÓPEZ"
+      },
+      sr: {
+        title: "ПЕСМА ЗА НИКОГА",
+        subtitle: "СИСТЕМ КОЛАБОРАТИВНЕ ПОЕЗИЈЕ",
+        service: "УСЛУГА:",
+        verse: "ПОЕТСКИ СТИХ",
+        status: "СТАТУС:",
+        active: "АКТИВНО",
+        continue: "НАСТАВИТИ ОД:",
+        verse_placeholder: "НАПИШИТЕ ВАШ СТИХ ОВДЕ...",
+        author_placeholder: "КО ПИШЕ? (опционо)",
+        send_button: "ПОШАЉИ СТИХ",
+        thanks: "ХВАЛА ВАМ НА УЧЕШЋУ",
+        view_poem: "ПОГЛЕДАЈ ПЕСМУ",
+        access_text: "Засад само уметник има приступ",
+        password_placeholder: "ЛОЗИНКА...",
+        login_button: "ПРИЈАВА",
+        session_started: "СЕСИЈА ПОЧЕТА",
+        view_full_poem: "ПОГЛЕДАЈ КОМПЛЕТНУ ПЕСМУ",
+        logout_button: "ОДЈАВА",
+        instructions: "УПУТСТВА",
+        instructions_text: "Пише се користећи методу Изузетног Леша, где многи људи сарађују да створе поетско дело без познавања потпуних претходних доприноса<br><br>1. Прочитајте последњу реч песме<br>2. Напишите стих почевши од те речи<br>3. У кутијици испод напишите своје име (ако не желите, само напишите анонимно)<br>4. Притисните пошаљи :)<br>5. Хвала хвала хвала на учешћу<br><br><strong>Могуће сумње</strong><br>• Нема ограничења речи<br>• Пишите на језику који желите<br>• Можете писати више од једном<br>• Стихови неће бити приписани аутору појединачно, али имена оних који су их написали појавиће се у захвалностима<br>• Не, не можете приступити комплетној песми док творац не одлучи да је објави ;)",
+        project: "О ПРОЈЕКТУ",
+        project_text: "<strong>И зашто овај пројекат?</strong><br><br>Зато што сам желела да видим шта се дешава када спојим стару куцаћу машину коју имам код куће са алатом за дигитализацију<br><br>Зато што сам уместо да учим немачки одлучила да учим код<br><br>Зато што је лето врло дуго и волим да се држим заузето<br><br>Зато што се тако мало лечим од проблема што не могу бити на више места истовремено<br><br>Зато што желим<br><br>Зато што након ове \"прве фазе\", узећу песму и направити са њом перформанс, фанзин, позоришну представу, инсталацију (или нешто слично)",
+        artist: "О УМЕТНИКУ",
+        artist_text: "Уметник и перформер. Моја омиљена боја је црвена. Тренутно живим између Берлина и Билбаа, са мојим стварима које проводе више времена у нераспакованом кофeru него у ормару.<br><br>Неће ми да причам више детаља, ко жели може да ми тражи резиме или да ми пише. Чини ме веома срећним што учествујете :)",
+        click_me: "КЛИКНИ МЕ",
+        project_credit: "ПРОЈЕКАТ МАРИЈЕ ЛОПЕЗ"
+      },
+      tr: {
+        title: "HİÇKİMSE İÇİN ŞİİR",
+        subtitle: "İŞBİRLİKÇİ ŞİİR SİSTEMİ",
+        service: "HİZMET:",
+        verse: "ŞİİRSEL MIZA",
+        status: "DURUM:",
+        active: "AKTİF",
+        continue: "DEVAM ET:",
+        verse_placeholder: "MIZANIZI BURAYA YAZIN...",
+        author_placeholder: "KİM YAZIYOR? (isteğe bağlı)",
+        send_button: "MIZA GÖNDER",
+        thanks: "KATILDIĞINIZ İÇİN TEŞEKKÜRLER",
+        view_poem: "ŞİİRİ GÖRÜNTÜLE",
+        access_text: "Şimdilik sadece sanatçının erişimi var",
+        password_placeholder: "ŞİFRE...",
+        login_button: "GİRİŞ",
+        session_started: "OTURUM BAŞLADI",
+        view_full_poem: "TAM ŞİİRİ GÖRÜNTÜLE",
+        logout_button: "ÇIKIŞ",
+        instructions: "TALİMATLAR",
+        instructions_text: "Nefis Ceset yöntemi kullanılarak yazılır, burada birçok kişi önceki tam katkıları bilmeden şiirsel bir parça yaratmak için işbirliği yapar<br><br>1. Şiirin son kelimesini okuyun<br>2. O kelimeden başlayarak bir mısra yazın<br>3. Aşağıdaki kutuya adınızı yazın (istemiyorsanız, sadece anonim yazın)<br>4. Gönder'e basın :)<br>5. Katıldığınız için teşekkürler teşekkürler teşekkürler<br><br><strong>Olası şüpheler</strong><br>• Kelime sınırı yoktur<br>• İstediğiniz dilde yazın<br>• Birden fazla kez yazabilirsiniz<br>• Mısralar yazar tarafından bireysel olarak kredilendirilmeyecek, ancak onları yazanların isimleri teşekkürlerde görünecek<br>• Hayır, yaratıcı yayınlamaya karar verene kadar tam şiire erişemezsiniz ;)",
+        project: "PROJE HAKKINDA",
+        project_text: "<strong>Ve neden bu proje?</strong><br><br>Çünkü evde sahip olduğum eski daktilo makinesini bir dijitalleştirme aracıyla birleştirdiğimde ne olacağını görmek istedim<br><br>Çünkü Almanca öğrenmek yerine kod öğrenmeye karar verdim<br><br>Çünkü yaz çok uzun ve kendimi meşgul tutmayı seviyorum<br><br>Çünkü böylece, aynı anda birden fazla yerde olamama sorunundan biraz iyileşiyorum<br><br>Çünkü istiyorum<br><br>Çünkü bu \"ilk aşama\"dan sonra, şiiri alacağım ve onunla bir performans, bir fanzin, bir oyun, bir enstalasyon yapacağım (ya da bunun gibi bir şey)",
+        artist: "SANATÇI HAKKINDA",
+        artist_text: "Sanatçı ve performans sanatçısı. En sevdiğim renk kırmızı. Şu anda Berlin ve Bilbao arasında yaşıyorum, eşyalarım bir dolabımda olduğundan daha çok açılmamış bir bavulda zaman geçiriyor.<br><br>Daha fazla detay anlatmak istemiyorum, isteyen özgeçmişimi isteyebilir ya da bana yazabilir. Katılmanız beni çok mutlu ediyor :)",
+        click_me: "TIKLA",
+        project_credit: "MARÍA LÓPEZ'İN PROJESİ"
+      },
+      pt: {
+        title: "POEMA PARA NINGUÉM",
+        subtitle: "SISTEMA DE POESIA COLABORATIVA",
+        service: "SERVIÇO:",
+        verse: "VERSO POÉTICO",
+        status: "STATUS:",
+        active: "ATIVO",
+        continue: "CONTINUAR DE:",
+        verse_placeholder: "ESCREVA SEU VERSO AQUI...",
+        author_placeholder: "QUEM ESCREVE? (opcional)",
+        send_button: "ENVIAR VERSO",
+        thanks: "OBRIGADA POR PARTICIPAR",
+        view_poem: "VER O POEMA",
+        access_text: "Por enquanto só a artista tem acesso",
+        password_placeholder: "SENHA...",
+        login_button: "ENTRAR",
+        session_started: "SESSÃO INICIADA",
+        view_full_poem: "VER POEMA COMPLETO",
+        logout_button: "SAIR",
+        instructions: "INSTRUÇÕES",
+        instructions_text: "É escrito usando o método do Cadáver Esquisito, onde muitas pessoas colaboram para criar uma peça poética sem conhecer as contribuições anteriores completas<br><br>1. Leia a última palavra do poema<br>2. Escreva um verso começando dessa palavra<br>3. Na caixa abaixo escreva seu nome (se não quiser, apenas escreva anônimo)<br>4. Aperte enviar :)<br>5. Obrigada obrigada obrigada por participar<br><br><strong>Possíveis dúvidas</strong><br>• Não há limite de palavras<br>• Escreva no idioma que quiser<br>• Você pode escrever mais de uma vez<br>• Os versos não serão creditados por autor individualmente, mas os nomes daqueles que os escreveram aparecerão nos agradecimentos<br>• Não, você não pode acessar o poema completo até que a criadora decida publicá-lo ;)",
+        project: "SOBRE O PROJETO",
+        project_text: "<strong>E por que este projeto?</strong><br><br>Porque quis ver o que acontecia ao juntar a velha máquina de escrever que tenho em casa com uma ferramenta de digitalização<br><br>Porque ao invés de me pôr a aprender alemão decidi aprender código<br><br>Porque o verão é muito longo e gosto de me manter ocupada<br><br>Porque assim, me curo um pouco do problema de não poder estar em mais de um lugar ao mesmo tempo<br><br>Porque me apetece<br><br>Porque depois desta \"primeira fase\", pegarei o poema e farei com ele uma performance, um fanzine, uma peça de teatro, uma instalação (ou algo assim)",
+        artist: "SOBRE A ARTISTA",
+        artist_text: "Artista e performer. Minha cor favorita é vermelha. Atualmente vivo entre Berlim e Bilbao, com minhas coisas passando mais tempo numa mala sem desfazer do que num armário.<br><br>Não me apetece contar mais detalhes, quem quiser pode me pedir o currículo ou me escrever. Me deixa muito feliz que participem :)",
+        click_me: "CLIQUE EM MIM",
+        project_credit: "UM PROJETO DE MARÍA LÓPEZ"
+      }
+    };
+
+    function changeLanguage(lang) {
+      const elements = document.querySelectorAll('[data-translate]');
+      elements.forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (translations[lang] && translations[lang][key]) {
+          element.innerHTML = translations[lang][key];
+        }
+      });
+
+      // Handle placeholders
+      const placeholders = document.querySelectorAll('[data-translate-placeholder]');
+      placeholders.forEach(element => {
+        const key = element.getAttribute('data-translate-placeholder');
+        if (translations[lang] && translations[lang][key]) {
+          element.placeholder = translations[lang][key];
+        }
+      });
+
+      // Save language preference
+      localStorage.setItem('selectedLanguage', lang);
+    }
+
+    // Load saved language on page load
+    function loadSavedLanguage() {
+      const savedLang = localStorage.getItem('selectedLanguage');
+      if (savedLang) {
+        document.getElementById('languageSelect').value = savedLang;
+        changeLanguage(savedLang);
+      }
+    }
+
+    cargarUltimaPalabra();
+    checkLoginStatus();
+    loadSavedLanguage();
+  </script>
+</body>
+</html>

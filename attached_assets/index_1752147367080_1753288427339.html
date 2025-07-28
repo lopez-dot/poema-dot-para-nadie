@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Poema para Nadie</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="ticket">
+    <h1>POEMA PARA NADIE</h1>
+    <div class="header-line">SISTEMA DE POESÍA COLABORATIVA</div>
+
+    <div class="item-line">
+      <span>SERVICIO:</span>
+      <span>VERSO POETICO</span>
+    </div>
+
+    <div class="item-line">
+      <span>ESTADO:</span>
+      <span>ACTIVO</span>
+    </div>
+
+    <div class="item-line main">
+      <span>CONTINUA DESDE:</span>
+    </div>
+
+    <div id="ultimaPalabra">Cargando última palabra...</div>
+
+    <textarea id="verso" placeholder="ESCRIBE TU VERSO AQUI..."></textarea>
+
+    <input type="text" id="autorNombre" placeholder="¿QUIEN ESCRIBE? (opcional)" />
+
+    <button onclick="enviarVerso()">ENVIAR VERSO</button>
+
+    <div class="footer">
+      GRACIAS POR PARTICIPAR
+    </div>
+  </div>
+
+  <div class="acceso-expandible">
+    <button onclick="toggleAcceso()" class="acceso-button">VER EL POEMA</button>
+    <div id="accesoContent" class="acceso-content" style="display: none;">
+      <div class="acceso-text">De momento solo la artista tiene acceso</div>
+      <div id="loginSection" class="acceso-login">
+        <input type="password" id="password" placeholder="CONTRASEÑA..." />
+        <button onclick="login()">LOGIN</button>
+      </div>
+      <div id="loggedInSection" class="acceso-logged" style="display: none;">
+        <div class="total-line">SESIÓN INICIADA</div>
+        <a href="/poema" target="_blank">VER POEMA COMPLETO</a>
+        <button onclick="logout()">LOGOUT</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-boxes">
+    <div class="info-box">
+      <button onclick="toggleInfo('instrucciones')" class="info-button">INSTRUCCIONES</button>
+      <div id="instrucciones" class="info-content" style="display: none;">
+        <div class="info-text">
+          Se escribe utilizando el método del Cadáver Exquisito, donde muchas personas colaboran para crear una pieza poética sin conocer las contribuciones previas completas<br><br>
+          1. Lee la última palabra del poema<br>
+          2. Escribe un verso a partir de esa palabra<br>
+          3. En la casilla de abajo escribe tu nombre (si no quieres tan solo escribe anónimo)<br>
+          4. Dale a enviar :)<br>
+          5. Gracias gracias gracias por participar<br><br>
+          <strong>Posibles dudas</strong><br>
+          • No hay límite de palabras<br>
+          • Escribe en el idioma que quieras<br>
+          • Puedes escribir más de una vez<br>
+          • A los versos no se les dará crédito por autor de forma individual, pero los nombres de los que los han escrito aparecerán en los agradecimientos<br>
+          • No, no se puede acceder al poema completo hasta que la creadora decida publicarlo ;)
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <button onclick="toggleInfo('proyecto')" class="info-button">SOBRE EL PROYECTO</button>
+      <div id="proyecto" class="info-content" style="display: none;">
+        <div class="info-text">
+          <strong>¿Y este proyecto porqué?</strong><br><br>
+          Porque me apetecía ver qué pasaba al juntar la vieja máquina de escribir que tengo en casa con una herramienta de digitalización<br><br>
+          Porque en vez de ponerme a aprender alemán he decidido aprender código<br><br>
+          Porque el verano es muy largo y me gusta mantenerme ocupada<br><br>
+          Porque así, me curo un poco del problema de no poder estar en más de un sitio a la vez<br><br>
+          Porque me apetece<br><br>
+          Porque después de esta "primera fase", cogeré el poema y haré con el una performance, un fanzine, una obra de teatro, una instalación (o algo de eso)
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <button onclick="toggleInfo('artista')" class="info-button">SOBRE LA ARTISTA</button>
+      <div id="artista" class="info-content" style="display: none;">
+        <div class="info-text">
+          <strong>31.10.200 Bilbao</strong><br><br>
+          Artista y performer. Mi color favorito es el rojo. Actualmente vivo entre Berlín y Bilbao, con mis cosas pasando más tiempo en una maleta sin deshacer que en un armario.<br><br>
+          No me apetece andar contando más detalles, el que quiera que me pida el currículum o me escriba. Me hace muy feliz que participéis :)<br><br>
+          <strong>Mail:</strong> maricuchini@gmail.com<br>
+          <strong>Instagram:</strong> just_maria_lopez
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="project-credit">
+    UN PROYECTO DE MARÍA LÓPEZ
+  </div>
+
+  <script>
+    async function cargarUltimaPalabra() {
+      const res = await fetch("/api/ultimo");
+      const data = await res.json();
+      document.getElementById("ultimaPalabra").innerText = data.ultima;
+    }
+
+    async function enviarVerso() {
+      const verso = document.getElementById("verso").value.trim();
+      const autor = document.getElementById("autorNombre").value.trim();
+      
+      if (!verso) {
+        alert("si no escribes no vale :(");
+        return;
+      }
+
+      await fetch("/api/agregar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ verso, autor }),
+      });
+
+      document.getElementById("verso").value = "";
+      document.getElementById("autorNombre").value = "";
+      cargarUltimaPalabra();
+    }
+
+    async function login() {
+      const password = document.getElementById("password").value;
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password })
+      });
+
+      if (res.ok) {
+        checkLoginStatus();
+        document.getElementById("password").value = "";
+      } else {
+        alert("Password incorrecto");
+      }
+    }
+
+    async function logout() {
+      await fetch("/api/logout", { method: "POST" });
+      checkLoginStatus();
+    }
+
+    async function checkLoginStatus() {
+      const res = await fetch("/api/status");
+      const data = await res.json();
+
+      if (data.isLoggedIn) {
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("loggedInSection").style.display = "block";
+      } else {
+        document.getElementById("loginSection").style.display = "block";
+        document.getElementById("loggedInSection").style.display = "none";
+      }
+    }
+
+    function toggleAcceso() {
+      const content = document.getElementById("accesoContent");
+      if (content.style.display === "none") {
+        content.style.display = "block";
+      } else {
+        content.style.display = "none";
+      }
+    }
+
+    document.getElementById("password").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        login();
+      }
+    });
+
+    function toggleInfo(infoId) {
+      const content = document.getElementById(infoId);
+      if (content.style.display === "none") {
+        content.style.display = "block";
+      } else {
+        content.style.display = "none";
+      }
+    }
+
+    cargarUltimaPalabra();
+    checkLoginStatus();
+  </script>
+</body>
+</html>
