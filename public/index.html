@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Poema para Nadie</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="language-selector">
+    <div class="language-label">IDIOMA</div>
+    <select id="languageSelect" onchange="changeLanguage(this.value)">
+      <option value="es">ESPAÑOL</option>
+      <option value="eu">EUSKERA</option>
+      <option value="en">ENGLISH</option>
+      <option value="de">DEUTSCH</option>
+      <option value="ka">ქართული</option>
+      <option value="it">ITALIANO</option>
+      <option value="sr">СРПСКИ</option>
+      <option value="tr">TÜRKÇE</option>
+      <option value="fr">FRANÇAIS</option>
+    </select>
+  </div>
+
+  <div class="ticket">
+    <h1 data-translate="title">POEMA PARA NADIE</h1>
+    <div class="header-line" data-translate="subtitle">SISTEMA DE POESÍA COLABORATIVA</div>
+
+    <div class="item-line">
+      <span data-translate="service">SERVICIO:</span>
+      <span data-translate="verse">ESCRIBE TU TEXTO</span>
+    </div>
+
+    <div class="item-line">
+      <span data-translate="status">ESTADO:</span>
+      <span data-translate="active">ACTIVO</span>
+    </div>
+
+    <div class="item-line main">
+      <span data-translate="continue">CONTINUA DESDE:</span>
+    </div>
+
+    <div id="ultimaPalabra">Cargando última palabra...</div>
+
+    <textarea id="verso" placeholder="escribe aquí..."></textarea>
+
+    <input type="text" id="autorNombre" placeholder="¿Quién escribe? opcional" />
+
+    <button onclick="enviarVerso()" data-translate="send_button">ENVIAR VERSO</button>
+
+    <div class="footer" data-translate="thanks">
+      GRACIAS POR PARTICIPAR
+    </div>
+  </div>
+
+  <div class="acceso-expandible">
+    <button onclick="toggleAcceso()" class="acceso-button" data-translate="view_poem">VER EL POEMA</button>
+    <div id="accesoContent" class="acceso-content" style="display: none;">
+      <div class="acceso-text" data-translate="access_text">De momento solo la artista tiene acceso</div>
+      <div id="loginSection" class="acceso-login">
+        <input type="password" id="password" data-translate-placeholder="password_placeholder" />
+        <button onclick="login()" data-translate="login_button">LOGIN</button>
+      </div>
+      <div id="loggedInSection" class="acceso-logged" style="display: none;">
+        <div class="total-line" data-translate="session_started">SESIÓN INICIADA</div>
+        <a href="/poema" target="_blank" data-translate="view_full_poem">VER POEMA COMPLETO</a>
+        <button onclick="logout()" data-translate="logout_button">LOGOUT</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-boxes">
+    <div class="info-box">
+      <button onclick="toggleInfo('instrucciones')" class="info-button" data-translate="instructions">INSTRUCCIONES</button>
+      <div id="instrucciones" class="info-content" style="display: none;">
+        <div class="info-text">
+          Este poema se escribe utilizando el método del Cadáver Exquisito<br><br>
+          <strong>1.</strong> Lee la última palabra del poema<br>
+          <strong>2.</strong> Escribe un verso a partir de esa palabra (a partir de lo que esa palabra te provoque, sobre esa palabra, no hay por qué copiarla como cabecera del verso)<br>
+          <strong>3.</strong> En la casilla de abajo escribe tu nombre (opcional)<br>
+          <strong>4.</strong> Dale a enviar<br>
+          <strong>5.</strong> gracias gracias por participar<br><br>
+          <strong>Posibles dudas:</strong><br>
+          • No hay límite de palabras<br>
+          • Escribe en el idioma que quieras<br>
+          • Escribe todas las veces que quieras<br>
+          • Si la última palabra no aparece, refresca la página<br>
+          • El texto se seguirá enviando aunque la casilla de "quién escribe" este vacía.<br>
+          • A los versos no se les dará crédito por autor de forma individual, pero los nombres de los que participen saldrán en los agradecimientos<br>
+          • No, no se puede acceder al poema completo hasta que la artista decida publicarlo ;)
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <button onclick="toggleInfo('proyecto')" class="info-button" data-translate="project">SOBRE EL PROYECTO</button>
+      <div id="proyecto" class="info-content" style="display: none;">
+        <div class="info-text">
+          <strong>¿Y este proyecto por qué?</strong><br><br>
+          Porque quería juntar la vieja máquina de escribir que hay escondida en el estudio con una herramienta de digitalización<br><br>
+          Porque en vez de mejorar mi alemán, he decidido aprender código<br><br>
+          Porque así, me curo un poco del problema de no poder estar en más de un sitio a la vez<br><br>
+          Porque me apetecía<br><br>
+          Porque después de esta "primera fase", cogeré el poema y haré con el una performance, un fanzine, una obra de teatro, una instalación (o algo de eso)
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <button onclick="toggleInfo('artista')" class="info-button" data-translate="artist">SOBRE LA ARTISTA</button>
+      <div id="artista" class="info-content" style="display: none;">
+        <div class="info-text-container">
+          <div class="info-text">
+            <strong>31.10.2000 Bilbao</strong><br><br>
+            María López. Artista y performer. Mi color favorito es el rojo. Vivo entre Bilbao y Berlín, con mis cosas pasando más tiempo en una maleta que en un armario. No voy a contar más detalles, el que quiera que me pida el cv o que me escriba y le contestaré encantada :)<br><br>
+            <strong>Mail:</strong> maricuchini@gmail.com<br>
+            <strong>Instagram:</strong> just_maria_lopez
+          </div>
+          <div class="artist-video-container">
+            <div class="video-click-indicator" onclick="playVideo()">
+              <div class="click-arrow">▶</div>
+              <div class="click-text">CLICK ME</div>
+            </div>
+            <video id="artistVideo" width="100%" style="max-width: 300px; display: none;">
+              <source src="/video.mp4" type="video/mp4">
+              Tu navegador no soporta el elemento de video.
+            </video>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="project-credit" data-translate="project_credit">
+    UN PROYECTO DE MARÍA LÓPEZ
+  </div>
+
+  <script>
+    async function cargarUltimaPalabra() {
+      try {
+        const res = await fetch("/api/ultimo");
+        const data = await res.json();
+        document.getElementById("ultimaPalabra").innerText = data.ultima;
+      } catch (error) {
+        console.error('Error cargando última palabra:', error);
+        document.getElementById("ultimaPalabra").innerText = "Error cargando";
+      }
+    }
+
+    async function enviarVerso() {
+      const verso = document.getElementById("verso").value.trim();
+      const autor = document.getElementById("autorNombre").value.trim();
+
+      if (!verso) {
+        alert("si no escribes no vale :(");
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/agregar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ verso, autor }),
+        });
+
+        if (res.ok) {
+          document.getElementById("verso").value = "";
+          document.getElementById("autorNombre").value = "";
+          cargarUltimaPalabra();
+        } else {
+          alert("Error enviando verso");
+        }
+      } catch (error) {
+        console.error('Error enviando verso:', error);
+        alert("Error de conexión");
+      }
+    }
+
+    async function login() {
+      const password = document.getElementById("password").value;
+      try {
+        const res = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password })
+        });
+
+        if (res.ok) {
+          checkLoginStatus();
+          document.getElementById("password").value = "";
+        } else {
+          alert("Password incorrecto");
+        }
+      } catch (error) {
+        console.error('Error en login:', error);
+        alert("Error de conexión");
+      }
+    }
+
+    async function logout() {
+      try {
+        await fetch("/api/logout", { method: "POST" });
+        checkLoginStatus();
+      } catch (error) {
+        console.error('Error en logout:', error);
+      }
+    }
+
+    async function checkLoginStatus() {
+      try {
+        const res = await fetch("/api/status");
+        const data = await res.json();
+
+        if (data.isLoggedIn) {
+          document.getElementById("loginSection").style.display = "none";
+          document.getElementById("loggedInSection").style.display = "block";
+        } else {
+          document.getElementById("loginSection").style.display = "block";
+          document.getElementById("loggedInSection").style.display = "none";
+        }
+      } catch (error) {
+        console.error('Error verificando status:', error);
+      }
+    }
+
+    function toggleAcceso() {
+      const content = document.getElementById("accesoContent");
+      if (content.style.display === "none") {
+        content.style.display = "block";
+      } else {
+        content.style.display = "none";
+      }
+    }
+
+    document.getElementById("password").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        login();
+      }
+    });
+
+    function toggleInfo(infoId) {
+      const content = document.getElementById(infoId);
+      if (content.style.display === "none") {
+        content.style.display = "block";
+      } else {
+        content.style.display = "none";
+      }
+    }
+
+    function playVideo() {
+      const video = document.getElementById('artistVideo');
+      const indicator = document.querySelector('.video-click-indicator');
+
+      indicator.style.display = 'none';
+      video.style.display = 'block';
+
+      video.controls = false;
+      video.currentTime = 0;
+
+      video.play();
+
+      video.addEventListener('ended', function() {
+        video.style.display = 'none';
+        indicator.style.display = 'flex';
+        video.currentTime = 0;
+      });
+    }
+
+    // Translation system
+    const translations = {
+      es: {
+        title: "POEMA PARA NADIE",
+        subtitle: "SISTEMA DE POESÍA COLABORATIVA",
+        service: "SERVICIO:",
+        verse: "ESCRIBE TU TEXTO",
+        status: "ESTADO:",
+        active: "ACTIVO",
+        continue: "CONTINUA DESDE:",
+        verse_placeholder: "escribe aquí...",
+        author_placeholder: "¿Quién escribe? opcional",
+        send_button: "ENVIAR VERSO",
+        thanks: "GRACIAS POR PARTICIPAR",
+        view_poem: "VER EL POEMA",
+        access_text: "De momento solo la artista tiene acceso",
+        password_placeholder: "CONTRASEÑA...",
+        login_button: "LOGIN",
+        session_started: "SESIÓN INICIADA",
+        view_full_poem: "VER POEMA COMPLETO",
+        logout_button: "LOGOUT",
+        instructions: "INSTRUCCIONES",
+        project: "SOBRE EL PROYECTO",
+        artist: "SOBRE LA ARTISTA",
+        click_me: "CLICK ME",
+        project_credit: "UN PROYECTO DE MARÍA LÓPEZ"
+      },
+      eu: {
+        title: "INORAKO POEMA",
+        subtitle: "LANKIDETZA POESIA SISTEMA",
+        service: "ZERBITZUA:",
+        verse: "IDATZI ZURE TESTUA",
+        status: "EGOERA:",
+        active: "AKTIBOA",
+        continue: "JARRAITU HITZETIK:",
+        verse_placeholder: "idatzi hemen...",
+        author_placeholder: "Nor idazten du? aukerakoa",
+        send_button: "BERTSOA BIDALI",
+        thanks: "ESKERRIK ASKO PARTE HARTZEAGATIK",
+        view_poem: "POEMA IKUSI",
+        access_text: "Oraingoz artistak bakarrik du sarbidea",
+        password_placeholder: "PASAHITZA...",
+        login_button: "SARTU",
+        session_started: "SAIOA HASI DA",
+        view_full_poem: "POEMA OSOA IKUSI",
+        logout_button: "IRTEN",
+        instructions: "JARRAIBIDEAK",
+        project: "PROIEKTUARI BURUZ",
+        artist: "ARTISTARI BURUZ",
+        click_me: "KLIK EGIN",
+        project_credit: "MARÍA LÓPEZ-EN PROIEKTUA"
+      },
+      en: {
+        title: "POEM FOR NOBODY",
+        subtitle: "COLLABORATIVE POETRY SYSTEM",
+        service: "SERVICE:",
+        verse: "WRITE YOUR TEXT",
+        status: "STATUS:",
+        active: "ACTIVE",
+        continue: "CONTINUE FROM:",
+        verse_placeholder: "write here...",
+        author_placeholder: "Who writes? optional",
+        send_button: "SEND VERSE",
+        thanks: "THANK YOU FOR PARTICIPATING",
+        view_poem: "VIEW THE POEM",
+        access_text: "For now only the artist has access",
+        password_placeholder: "PASSWORD...",
+        login_button: "LOGIN",
+        session_started: "SESSION STARTED",
+        view_full_poem: "VIEW COMPLETE POEM",
+        logout_button: "LOGOUT",
+        instructions: "INSTRUCTIONS",
+        project: "ABOUT THE PROJECT",
+        artist: "ABOUT THE ARTIST",
+        click_me: "CLICK ME",
+        project_credit: "A PROJECT BY MARÍA LÓPEZ"
+      },
+      de: {
+        title: "GEDICHT FÜR NIEMANDEN",
+        subtitle: "KOLLABORATIVES POESIE-SYSTEM",
+        service: "DIENST:",
+        verse: "SCHREIBT EUREN TEXT",
+        status: "STATUS:",
+        active: "AKTIV",
+        continue: "WEITER VON:",
+        verse_placeholder: "schreibt hier...",
+        author_placeholder: "Wer schreibt? optional",
+        send_button: "VERS SENDEN",
+        thanks: "DANKE FÜR EURE TEILNAHME",
+        view_poem: "GEDICHT ANSEHEN",
+        access_text: "Momentan hat nur die Künstlerin Zugang",
+        password_placeholder: "PASSWORT...",
+        login_button: "ANMELDEN",
+        session_started: "SITZUNG GESTARTET",
+        view_full_poem: "VOLLSTÄNDIGES GEDICHT ANSEHEN",
+        logout_button: "ABMELDEN",
+        instructions: "ANWEISUNGEN",
+        project: "ÜBER DAS PROJEKT",
+        artist: "ÜBER DIE KÜNSTLERIN",
+        click_me: "KLICK MICH",
+        project_credit: "EIN PROJEKT VON MARÍA LÓPEZ"
+      },
+      ka: {
+        title: "ლექსი ვერავისთვის",
+        subtitle: "კოლაბორაციული პოეზიის სისტემა",
+        service: "სერვისი:",
+        verse: "დაწერეთ თქვენი ტექსტი",
+        status: "სტატუსი:",
+        active: "აქტიური",
+        continue: "გაგრძელება:",
+        verse_placeholder: "დაწერეთ აქ...",
+        author_placeholder: "ვინ წერს? არასავალდებულო",
+        send_button: "ლექსის გაგზავნა",
+        thanks: "მადლობა მონაწილეობისთვის",
+        view_poem: "ლექსის ნახვა",
+        access_text: "ამჟამად მხოლოდ მხატვარს აქვს წვდომა",
+        password_placeholder: "პაროლი...",
+        login_button: "შესვლა",
+        session_started: "სესია დაიწყო",
+        view_full_poem: "სრული ლექსის ნახვა",
+        logout_button: "გამოსვლა",
+        instructions: "ინსტრუქციები",
+        project: "პროექტის შესახებ",
+        artist: "მხატვრის შესახებ",
+        click_me: "დამაჭირე",
+        project_credit: "მარია ლოპესის პროექტი"
+      },
+      it: {
+        title: "POESIA PER NESSUNO",
+        subtitle: "SISTEMA DI POESIA COLLABORATIVA",
+        service: "SERVIZIO:",
+        verse: "SCRIVI IL TUO TESTO",
+        status: "STATO:",
+        active: "ATTIVO",
+        continue: "CONTINUA DA:",
+        verse_placeholder: "scrivi qui...",
+        author_placeholder: "Chi scrive? opzionale",
+        send_button: "INVIA VERSO",
+        thanks: "GRAZIE PER LA PARTECIPAZIONE",
+        view_poem: "VISUALIZZA LA POESIA",
+        access_text: "Per ora solo l'artista ha accesso",
+        password_placeholder: "PASSWORD...",
+        login_button: "ACCEDI",
+        session_started: "SESSIONE INIZIATA",
+        view_full_poem: "VISUALIZZA POESIA COMPLETA",
+        logout_button: "ESCI",
+        instructions: "ISTRUZIONI",
+        project: "RIGUARDO IL PROGETTO",
+        artist: "RIGUARDO L'ARTISTA",
+        click_me: "CLICCAMI",
+        project_credit: "UN PROGETTO DI MARÍA LÓPEZ"
+      },
+      sr: {
+        title: "ПЕСМА ЗА НИКОГА",
+        subtitle: "СИСТЕМ КОЛАБОРАТИВНЕ ПОЕЗИЈЕ",
+        service: "УСЛУГА:",
+        verse: "НАПИШИТЕ ВАШ ТЕКСТ",
+        status: "СТАТУС:",
+        active: "АКТИВНО",
+        continue: "НАСТАВИТИ ОД:",
+        verse_placeholder: "пишите овде...",
+        author_placeholder: "Ко пише? опционо",
+        send_button: "ПОШАЉИ СТИХ",
+        thanks: "ХВАЛА ВАМ НА УЧЕШЋУ",
+        view_poem: "ПОГЛЕДАЈ ПЕСМУ",
+        access_text: "Засад само уметник има приступ",
+        password_placeholder: "ЛОЗИНКА...",
+        login_button: "ПРИЈАВА",
+        session_started: "СЕСИЈА ПОЧЕТА",
+        view_full_poem: "ПОГЛЕДАЈ КОМПЛЕТНУ ПЕСМУ",
+        logout_button: "ОДЈАВА",
+        instructions: "УПУТСТВА",
+        project: "О ПРОЈЕКТУ",
+        artist: "О УМЕТНИКУ",
+        click_me: "КЛИКНИ МЕ",
+        project_credit: "ПРОЈЕКАТ МАРИЈЕ ЛОПЕЗ"
+      },
+      tr: {
+        title: "HİÇKİMSE İÇİN ŞİİR",
+        subtitle: "İŞBİRLİKÇİ ŞİİR SİSTEMİ",
+        service: "HİZMET:",
+        verse: "METNİNİZİ YAZIN",
+        status: "DURUM:",
+        active: "AKTİF",
+        continue: "DEVAM ET:",
+        verse_placeholder: "buraya yazın...",
+        author_placeholder: "Kim yazıyor? isteğe bağlı",
+        send_button: "MIZA GÖNDER",
+        thanks: "KATILDIĞINIZ İÇİN TEŞEKKÜRLER",
+        view_poem: "ŞİİRİ GÖRÜNTÜLE",
+        access_text: "Şimdilik sadece sanatçının erişimi var",
+        password_placeholder: "ŞİFRE...",
+        login_button: "GİRİŞ",
+        session_started: "OTURUM BAŞLADI",
+        view_full_poem: "TAM ŞİİRİ GÖRÜNTÜLE",
+        logout_button: "ÇIKIŞ",
+        instructions: "TALİMATLAR",
+        project: "PROJE HAKKINDA",
+        artist: "SANATÇI HAKKINDA",
+        click_me: "TIKLA",
+        project_credit: "MARÍA LÓPEZ'İN PROJESİ"
+      },
+      fr: {
+        title: "POÈME POUR PERSONNE",
+        subtitle: "SYSTÈME DE POÉSIE COLLABORATIVE",
+        service: "SERVICE:",
+        verse: "ÉCRIVEZ VOTRE TEXTE",
+        status: "STATUT:",
+        active: "ACTIF",
+        continue: "CONTINUER DEPUIS:",
+        verse_placeholder: "écrivez ici...",
+        author_placeholder: "Qui écrit? optionnel",
+        send_button: "ENVOYER LE VERS",
+        thanks: "MERCI DE PARTICIPER",
+        view_poem: "VOIR LE POÈME",
+        access_text: "Pour l'instant seule l'artiste a accès",
+        password_placeholder: "MOT DE PASSE...",
+        login_button: "CONNEXION",
+        session_started: "SESSION DÉMARRÉE",
+        view_full_poem: "VOIR LE POÈME COMPLET",
+        logout_button: "DÉCONNEXION",
+        instructions: "INSTRUCTIONS",
+        project: "À PROPOS DU PROJET",
+        artist: "À PROPOS DE L'ARTISTE",
+        click_me: "CLIQUEZ-MOI",
+        project_credit: "UN PROJET DE MARÍA LÓPEZ"
+      }
+    };
+
+    function changeLanguage(lang) {
+      const elements = document.querySelectorAll('[data-translate]');
+      elements.forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (translations[lang] && translations[lang][key]) {
+          element.innerHTML = translations[lang][key];
+        }
+      });
+
+      // Handle placeholders
+      const placeholders = document.querySelectorAll('[data-translate-placeholder]');
+      placeholders.forEach(element => {
+        const key = element.getAttribute('data-translate-placeholder');
+        if (translations[lang] && translations[lang][key]) {
+          element.placeholder = translations[lang][key];
+        }
+      });
+
+      // Save language preference
+      localStorage.setItem('selectedLanguage', lang);
+    }
+
+    function loadSavedLanguage() {
+      const savedLang = localStorage.getItem('selectedLanguage');
+      if (savedLang) {
+        document.getElementById('languageSelect').value = savedLang;
+        changeLanguage(savedLang);
+      }
+    }
+
+    // Inicializar
+    cargarUltimaPalabra();
+    checkLoginStatus();
+    loadSavedLanguage();
+  </script>
+</body>
+</html>

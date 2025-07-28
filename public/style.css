@@ -1,0 +1,514 @@
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "JetBrains Mono", monospace;
+}
+
+body {
+  font-family: "JetBrains Mono", monospace;
+  background-image: url('/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: #000;
+  padding: 10px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.4;
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 5px;
+  }
+}
+
+.ticket {
+  background: #fff;
+  width: 100%;
+  max-width: 400px;
+  border: 2px dashed #000;
+  padding: 25px 20px;
+  margin-bottom: 20px;
+  border-radius: 2px;
+}
+
+@media (max-width: 480px) {
+  .ticket {
+    max-width: 95%;
+    padding: 20px 15px;
+    margin-bottom: 15px;
+  }
+}
+
+h1 {
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.header-line {
+  text-align: center;
+  font-size: 12px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #000;
+  padding-bottom: 15px;
+}
+
+.item-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.item-line.main {
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 1px dashed #000;
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+}
+
+#ultimaPalabra {
+  background: #f0f0f0;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  margin: 15px 0;
+  border: 1px solid #ccc;
+}
+
+textarea {
+  width: 100%;
+  height: 80px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  padding: 10px;
+  border: 1px solid #000;
+  background: #fff;
+  resize: none;
+  margin: 15px 0 10px 0;
+}
+
+textarea:focus {
+  outline: 2px solid #000;
+}
+
+input[type="text"] {
+  width: 100%;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  margin: 5px 0 10px 0;
+  text-align: center;
+  color: #666;
+}
+
+input[type="text"]:focus {
+  outline: 1px solid #ccc;
+  background: #fff;
+}
+
+button {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+  margin: 5px 0;
+}
+
+button:hover {
+  background: #333;
+}
+
+button:active {
+  background: #000;
+  transform: translateY(1px);
+}
+
+.acceso {
+  background: #fff;
+  border: 2px dashed #000;
+  border-radius: 2px;
+  padding: 15px;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.acceso p {
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.acceso input[type="password"] {
+  width: 100%;
+  padding: 8px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  border: 1px solid #000;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.acceso input[type="password"]:focus {
+  outline: 2px solid #000;
+}
+
+.acceso a {
+  color: #000;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.acceso a:hover {
+  text-decoration: underline;
+}
+
+.acceso a[href="/poema"] {
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  display: inline-block;
+  margin: 5px 2px;
+  font-size: 10px;
+}
+
+.acceso a[href="/poema"]:hover {
+  background: #333;
+  text-decoration: none;
+}
+
+.footer {
+  text-align: center;
+  font-size: 10px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px dashed #000;
+}
+
+/* Elementos de separación tipo ticket */
+.divider {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.total-line {
+  border-top: 2px solid #000;
+  border-bottom: 1px solid #000;
+  padding: 10px 0;
+  margin: 15px 0;
+  font-weight: 700;
+  font-size: 14px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.info-boxes {
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+}
+
+.info-box {
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 2px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+@media (max-width: 480px) {
+  .info-boxes {
+    margin-top: 15px;
+  }
+  
+  .info-box {
+    margin-bottom: 8px;
+  }
+}
+
+.info-button {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 12px 16px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
+}
+
+.info-button:hover {
+  background: #555;
+}
+
+.info-content {
+  padding: 0;
+}
+
+.info-text {
+  padding: 20px;
+  font-size: 11px;
+  line-height: 1.6;
+  border-top: 1px solid #ccc;
+  background: #f9f9f9;
+}
+
+.info-text-container {
+  padding: 20px;
+  font-size: 11px;
+  line-height: 1.6;
+  border-top: 1px solid #ccc;
+  background: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-text {
+  width: 100%;
+}
+
+.artist-video-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.video-click-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 20px;
+  background: #000;
+  color: #fff;
+  border: 2px solid #000;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: background-color 0.2s;
+}
+
+.video-click-indicator:hover {
+  background: #333;
+}
+
+.click-arrow {
+  font-size: 16px;
+  color: #fff;
+}
+
+.click-text {
+  color: #fff;
+}
+
+.artist-video-container video {
+  border: 2px solid #000;
+  border-radius: 2px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.acceso-expandible {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 480px) {
+  .acceso-expandible {
+    margin-bottom: 15px;
+  }
+}
+
+.acceso-button {
+  background: #000;
+  color: #fff;
+  border: 2px dashed #000;
+  padding: 12px 20px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+  margin: 0;
+}
+
+.acceso-button:hover {
+  background: #333;
+}
+
+.acceso-content {
+  background: #fff;
+  border: 2px dashed #000;
+  border-top: none;
+  padding: 20px;
+}
+
+.acceso-text {
+  text-align: center;
+  font-size: 11px;
+  margin-bottom: 15px;
+  color: #666;
+}
+
+.acceso-login input[type="password"] {
+  width: 100%;
+  padding: 8px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  border: 1px solid #000;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.acceso-login input[type="password"]:focus {
+  outline: 2px solid #000;
+}
+
+.acceso-logged a {
+  color: #000;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.acceso-logged a:hover {
+  text-decoration: underline;
+}
+
+.acceso-logged a[href="/poema"] {
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  display: inline-block;
+  margin: 5px 2px;
+  font-size: 10px;
+}
+
+.acceso-logged a[href="/poema"]:hover {
+  background: #333;
+  text-decoration: none;
+}
+
+.project-credit {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 10px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.language-selector {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 2px;
+  padding: 12px;
+  z-index: 1000;
+  min-width: 140px;
+}
+
+.language-selector select {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+  border-radius: 2px;
+}
+
+.language-selector select:focus {
+  outline: none;
+}
+
+.language-selector select option {
+  background: #000;
+  color: #fff;
+  padding: 8px;
+}
+
+.language-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .language-selector {
+    top: 10px;
+    right: 10px;
+    padding: 10px;
+    min-width: 120px;
+  }
+  
+  .language-selector select {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+  
+  .language-label {
+    font-size: 10px;
+    margin-bottom: 6px;
+  }
+}
